@@ -1,0 +1,51 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.4.RELEASE'
+	}
+	repositories {
+		maven { url { 'https://repository.cars.com/artifactory/libs-release' } }
+		maven { url { 'https://repository.cars.com/artifactory/libs-snapshot' } }
+		maven { url { 'https://plugins.gradle.org/m2/' } }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.cars.consumer'
+version = '1.0'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenLocal()
+	maven { url { 'https://repository.cars.com/artifactory/libs-release' } }
+	maven { url { 'https://repository.cars.com/artifactory/libs-snapshot' } }
+	maven { url { 'https://plugins.gradle.org/m2/' } }
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	runtime('org.postgresql:postgresql')
+
+	compile("com.cars:docker-secrets:0.2.0")
+	compile("com.cars.framework:health-check:1.0")
+	compile("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
+	compile("org.apache.commons:commons-lang3:3.7")
+	compile("com.cars.data:secrets-manager-client:1.0-SNAPSHOT")
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+bootRun {
+	enableAssertions = true
+}
+
+tasks.withType(JavaExec) {
+	systemProperties System.properties
+}
